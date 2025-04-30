@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>Medical System</title>
+<link rel="stylesheet" href="style.css"></head><body>
+<div id="medical-ui" class="hidden"><div class="header">MEDICAL SYSTEM • <span id="patient-name"></span></div>
+<div class="container"><div class="map-container">
+<img src="images/body_silhouette.png" alt="Body Silhouette">
+<div class="hotspot head" data-part="head"></div>
+<div class="hotspot torso" data-part="torso"></div>
+<div class="hotspot leftArm" data-part="leftArm"></div>
+<div class="hotspot rightArm" data-part="rightArm"></div>
+<div class="hotspot leftLeg" data-part="leftLeg"></div>
+<div class="hotspot rightLeg" data-part="rightLeg"></div>
+</div><div class="details">
+<h2 id="part-name">Select a part</h2><ul id="injuries-list"><li>No wounds</li></ul>
+<div class="actions">
+<button data-item="tourniquet">Tourniquet</button>
+<button data-item="fieldDressing">Field Dressing</button>
+<button data-item="elasticBandage">Elastic Bandage</button>
+<button data-item="quickClot">Quick Clot</button>
+<button data-item="packingBandage">Packing Bandage</button>
+<button data-item="surgicalKit">Surgical Kit</button>
+<button data-item="epiPen">Epi-Pen</button>
+<button data-item="morphine">Morphine</button>
+<button data-item="painkiller">Painkiller</button>
+<button data-item="defibrillator">Defibrillator</button>
+</div></div></div>
+<div class="quick-actions">
+<button id="check-consciousness">Check Consciousness</button>
+<button id="check-pulse">Check Pulse</button>
+<button id="check-temperature">Check Temp</button>
+</div><button id="close-ui">Close</button>
+<script src="script.js"></script></body></html>

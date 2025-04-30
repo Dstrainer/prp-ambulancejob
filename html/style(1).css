@@ -1,0 +1,13 @@
+body{margin:0;font-family:Arial,sans-serif;background:rgba(0,0,0,0.7);} .hidden{display:none;}
+#medical-ui{width:800px;margin:40px auto;background:#1a1a1a;padding:20px;border-radius:8px;color:#eee;}
+.header{font-size:18px;margin-bottom:10px;} .container{display:flex;} .map-container{position:relative;flex:1;}
+.map-container img{width:100%;border-radius:8px;} .hotspot{position:absolute;cursor:pointer;border:2px solid transparent;}
+.hotspot.injured{background:rgba(255,0,0,0.4);border-color:#f00;}
+.hotspot.head{top:5%;left:40%;width:20%;height:15%;} .hotspot.torso{top:20%;left:35%;width:30%;height:40%;}
+.hotspot.leftArm{top:20%;left:15%;width:15%;height:40%;} .hotspot.rightArm{top:20%;left:70%;width:15%;height:40%;}
+.hotspot.leftLeg{top:60%;left:35%;width:15%;height:35%;} .hotspot.rightLeg{top:60%;left:50%;width:15%;height:35%;}
+.details{flex:1;padding:0 20px;} .details h2{margin-top:0;} .actions button{display:block;margin:5px 0;
+width:100%;padding:8px;background:#333;border:none;border-radius:4px;color:#fff;cursor:pointer;}
+.quick-actions{margin-top:15px;text-align:center;} .quick-actions button{margin:0 5px;padding:8px 12px;
+background:#444;border:none;border-radius:4px;color:#fff;cursor:pointer;} #close-ui{margin-top:15px;width:100%;
+padding:10px;background:#900;border:none;border-radius:4px;color:#fff;cursor:pointer;}
