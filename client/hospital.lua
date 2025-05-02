@@ -1,5 +1,6 @@
 local config = require 'config.client'
 local sharedConfig = require 'config.shared'
+local lib = exports.ox_lib
 local bedObject
 local bedOccupyingData
 local cam
@@ -48,7 +49,14 @@ local function putPlayerInBed(hospitalName, bedIndex, isRevive, skipOpenCheck)
     if IsInHospitalBed then return end
     if not skipOpenCheck then
         if lib.callback.await('qbx_ambulancejob:server:isBedTaken', false, hospitalName, bedIndex) then
-            exports.qbx_core:Notify(locale('error.beds_taken'), 'error')
+            lib.notify({
+                title = locale('error.beds_taken'),
+                description = locale('error.beds_taken_desc'),
+                type = 'error',
+                position = 'top',
+                duration = 5000,
+                icon = 'fa fa-medkit'
+            })
             return
         end
     end
@@ -64,7 +72,14 @@ local function putPlayerInBed(hospitalName, bedIndex, isRevive, skipOpenCheck)
     CreateThread(function()
         Wait(5)
         if isRevive then
-            exports.qbx_core:Notify(locale('success.being_helped'), 'success')
+            lib.notify({
+                title = locale('text.check_in'),
+                description = locale('success.being_helped'),
+                type = 'success',
+                position = 'top',
+                duration = 5000,
+                icon = 'fa fa-medkit'
+            })
             Wait(config.aiHealTimer * 1000)
             TriggerEvent('hospital:client:Revive')
         else
@@ -118,7 +133,14 @@ local function checkIn(hospitalName)
     then
         lib.callback.await('qbx_ambulancejob:server:checkIn', false, cache.serverId, hospitalName)
     else
-        exports.qbx_core:Notify(locale('error.canceled'), 'error')
+        lib.notify({
+            title = locale('text.check_in'),
+            description = locale('error.canceled'),
+            type = 'error',
+            position = 'top',
+            duration = 5000,
+            icon = 'fa fa-medkit'
+        })
     end
 end
 

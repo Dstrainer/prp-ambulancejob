@@ -30,9 +30,9 @@ AddEventHandler('prp-amb:applyItem', function(target, part, item)
         -- tell the target to heal that part
         TriggerClientEvent('prp-amb:healPart', target, part, item)
         -- notify the EMS medic
-        TriggerClientEvent('ox_lib:notify', src, { type = 'success', description = ('Applied %s to %s'):format(item, part) })
+        TriggerClientEvent('ox_lib:notify', src, {title='Medical', type = 'success', description = ('Applied %s to %s'):format(item, part), position = 'top', duration = 5000, icon = 'fa fa-medkit'})
     else
-        TriggerClientEvent('ox_lib:notify', src, { type = 'error', description = ('Missing item: %s'):format(item) })
+        TriggerClientEvent('ox_lib:notify', src, {title='Medical', type = 'error', description = ('Missing item: %s'):format(item), position = 'top', duration = 5000, icon = 'fa fa-medkit'})
     end
 end)
 
@@ -59,3 +59,35 @@ exports.qbx_core:CreateUseableItem(cfg.defibrillator, function(source, item)
     -- place the defibrillator on client
     TriggerClientEvent('prp-amb:PlaceDefib', source)
 end)
+
+-- EMS starts CPR on a downed player
+RegisterNetEvent('prp-amb:startCpr', function(targetSrc)
+    if GetInvokingResource() then return end
+    local medic = exports.qbx_core:GetPlayer(source)
+    if not medic or medic.PlayerData.job.type ~= 'ambulance' or medic.PlayerData.job.type ~= 'ems' or medic.PlayerData.job.type ~= 'police' then return end
+
+    -- Tell the medic client to play CPR emote + progress bar
+    TriggerClientEvent('prp-amb:performCpr', source, targetSrc)
+end)
+
+-- Medic finishes CPR successfully
+RegisterNetEvent('prp-amb:finishCpr', function(targetSrc)
+    if GetInvokingResource() then return end
+    local medic = exports.qbx_core:GetPlayer(source)
+    if not medic or medic.PlayerData.job.type ~= 'ambulance' or medic.PlayerData.job.type ~= 'ems' or medic.PlayerData.job.type ~= 'police' then return end
+
+    -- Pause the target’s death timer
+    TriggerClientEvent('prp-amb:pauseDeathTimer', targetSrc, sharedConfig.CPRPauseTime)
+
+    -- Notify the medic via ox_lib
+TriggerClientEvent('ox_lib:notify', source, {
+    title      = 'Medical',
+    type        = 'success',
+    description = ('CPR successful! Respawn paused for %ds'):format(sharedConfig.CPRPauseTime),
+    position   = 'top',
+    duration  = 5000,
+    icon     = 'fa fa-medkit'
+})
+end)
+
+

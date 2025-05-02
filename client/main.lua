@@ -1,4 +1,5 @@
 local sharedConfig = require 'config.shared'
+local lib = exports.ox_lib
 InBedDict = 'anim@gangops@morgue@table@'
 InBedAnim = 'body_search'
 IsInHospitalBed = false
@@ -14,7 +15,14 @@ OnPainKillers = false
 RegisterNetEvent('hospital:client:ambulanceAlert', function(coords, text)
     if GetInvokingResource() then return end
     local streets = qbx.getStreetName(coords)
-    exports.qbx_core:Notify(locale('text.alert'), 'inform', nil, text .. ' | ' .. streets.main .. ' ' .. streets.cross)
+    lib.notify({
+        title = locale('text.alert'),
+        description = text .. ' | ' .. streets.main .. ' ' .. streets.cross,
+        type = 'inform',
+        position = 'top',
+        duration = 5000,
+        icon = 'fa fa-medkit'
+    })
     PlaySound(-1, 'Lose_1st', 'GTAO_FM_Events_Soundset', false, 0, true)
     local transG = 250
     local blip = AddBlipForCoord(coords.x, coords.y, coords.z)

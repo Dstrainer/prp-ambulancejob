@@ -1,5 +1,6 @@
 local config = require 'config.client'
 local painkillerAmount = 0
+local lib = exports.ox_lib
 
 lib.callback.register('hospital:client:UseIfaks', function()
     if lib.progressCircle({
@@ -32,7 +33,7 @@ lib.callback.register('hospital:client:UseIfaks', function()
         end
         return true
     else
-        exports.qbx_core:Notify(locale('error.canceled'), 'error')
+        lib.notify({title = 'Medical', description = locale('error.canceled'), type = 'error', position = 'top', icon = 'fa fa-medkit', duration = 5000})
         return false
     end
 end)
@@ -65,7 +66,7 @@ lib.callback.register('hospital:client:UseBandage', function()
         end
         return true
     else
-        exports.qbx_core:Notify(locale('error.canceled'), 'error')
+        lib.notify({title = 'Medical', description = locale('error.canceled'), type = 'error', position = 'top', icon = 'fa fa-medkit', duration = 5000})
         return false
     end
 end)
@@ -96,7 +97,7 @@ lib.callback.register('hospital:client:UsePainkillers', function()
         end
         return true
     else
-        exports.qbx_core:Notify(locale('error.canceled'), 'error')
+        lib.notify({title = 'Medical', description = locale('error.canceled'), type = 'error', position = 'top', icon = 'fa fa-medkit', duration = 5000})
         return false
     end
 end)

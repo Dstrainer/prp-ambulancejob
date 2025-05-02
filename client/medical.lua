@@ -22,7 +22,7 @@ RegisterNetEvent('prp-amb:PlaceMedicBag', function()
                 SetNuiFocus(true, true)
                 SendNUIMessage({ action = 'open', target = GetPlayerServerId(tgt) })
             else
-                lib.notify({ type = 'error', description = 'No patient nearby' })
+                lib.notify({ type = 'error', description = 'No patient nearby', title = 'Medical', position = 'top', duration = 5000, icon = 'fa fa-medkit'  })
             end
         end,
         canInteract = function()
@@ -50,7 +50,7 @@ RegisterNetEvent('prp-amb:PlaceDefib', function()
                 -- apply "heart" injury part with defib
                 TriggerServerEvent('prp-amb:applyItem', GetPlayerServerId(tgt), 'heart', 'defibrillator')
             else
-                lib.notify({ type = 'error', description = 'No patient nearby' })
+                lib.notify({title = 'Medical', type = 'error', description = 'No patient nearby', position = 'top', duration = 5000, icon = 'fa fa-medkit' })
             end
         end,
         canInteract = function()
@@ -72,15 +72,53 @@ RegisterNetEvent('prp-amb:healPart', function(target, part, item)
     -- add other item effects as needed...
 end)
 
+RegisterNetEvent('prp-amb:performCpr', function(targetId)
+    local ped = PlayerPedId()
+    local dict, anim = 'mini@cpr@char_a@cpr_str', 'cpr_pumpchest'
+
+    -- 1) Load the anim dict
+    RequestAnimDict(dict)
+    while not HasAnimDictLoaded(dict) do
+        Citizen.Wait(10)
+    end
+
+    -- 2) Kick off the progress bar with onStart/onFinish hooks
+    exports.ox_lib:progressBar({
+        duration     = 5000,
+        label        = 'Performing CPR...',
+        useWhileDead = false,
+        canCancel    = true,
+        disable = {
+            move   = true,
+            combat = true,
+            mouse  = false
+        },
+        onStart = function()
+            -- start CPR emote
+            TaskPlayAnim(ped, dict, anim, 8.0, -8.0, -1, 49, 0, false, false, false)
+        end,
+        onFinish = function()
+            -- clear the anim and notify server
+            ClearPedTasks(ped)
+            TriggerServerEvent('prp-amb:finishCpr', targetId)
+        end,
+        onCancel = function()
+            -- if you cancel, stop anim too
+            ClearPedTasks(ped)
+        end
+    })
+end)
+
+
 -- Quick‐action feedback
 RegisterNetEvent('prp-amb:showPulse', function()
-    lib.notify({ type = 'inform', description = 'Pulse: ' .. (GetEntityHealth(PlayerPedId()) > 100 and 'Present' or 'None') })
+    lib.notify({ title = 'Medical', type = 'inform', description = 'Pulse: ' .. (GetEntityHealth(PlayerPedId()) > 100 and 'Present' or 'None'), position = 'top', duration = 5000, icon = 'fa fa-medkit' })
 end)
 RegisterNetEvent('prp-amb:showConsciousness', function()
-    lib.notify({ type = 'inform', description = IsPedInjured(PlayerPedId()) and 'Unconscious' or 'Conscious' })
+    lib.notify({ title = 'Medical', type = 'inform', description = IsPedInjured(PlayerPedId()) and 'Unconscious' or 'Conscious', position = 'top', duration = 5000, icon = 'fa fa-medkit' })
 end)
 RegisterNetEvent('prp-amb:showTemperature', function()
-    lib.notify({ type = 'inform', description = 'Body Temp: Normal' })
+    lib.notify({ title = 'Medical', type = 'inform', description = 'Body Temp: Normal', position = 'top', duration = 5000, icon = 'fa fa-medkit' })
 end)
 
 -- NUI callbacks → forward to server

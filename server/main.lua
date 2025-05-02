@@ -11,7 +11,7 @@ local function alertAmbulance(src, text)
 	local coords = GetEntityCoords(ped)
 	local players = exports.qbx_core:GetQBPlayers()
 	for _, v in pairs(players) do
-		if v.PlayerData.job.type == 'ems' and v.PlayerData.job.onduty then
+		if v.PlayerData.job.type == 'ems' or v.PlayerData.job.type ~= 'ems' and v.PlayerData.job.onduty then
 			TriggerClientEvent('hospital:client:ambulanceAlert', v.PlayerData.source, coords, text)
 		end
 	end
@@ -54,7 +54,7 @@ RegisterNetEvent('hospital:server:TreatWounds', function(playerId)
 	local src = source
 	local player = exports.qbx_core:GetPlayer(src)
 	local patient = exports.qbx_core:GetPlayer(playerId)
-	if player.PlayerData.job.type ~= 'ems' or not patient then return end
+	if player.PlayerData.job.type ~= 'ems' or player.PlayerData.job.type ~= 'ambulance' or not patient then return end
 
 	exports.ox_inventory:RemoveItem(src, 'bandage', 1)
 	TriggerClientEvent('hospital:client:HealInjuries', patient.PlayerData.source, 'full')
@@ -81,7 +81,7 @@ RegisterNetEvent('hospital:server:UseFirstAid', function(targetId)
 
 	local canHelp = lib.callback.await('hospital:client:canHelp', targetId)
 	if not canHelp then
-		exports.qbx_core:Notify(src, locale('error.cant_help'), 'error')
+        TriggerClientEvent('ox_lib:notify', src, {title='Medical', type = 'error', description = locale('error.cant_help'), position = 'top', duration = 5000, icon = 'fa fa-medkit'})
 		return
 	end
 
@@ -89,7 +89,7 @@ RegisterNetEvent('hospital:server:UseFirstAid', function(targetId)
 end)
 
 lib.callback.register('qbx_ambulancejob:server:getNumDoctors', function()
-	return exports.qbx_core:GetDutyCountType('ems')
+	return exports.qbx_core:GetDutyCountType('ambulance')
 end)
 
 lib.addCommand('911e', {
@@ -103,7 +103,7 @@ lib.addCommand('911e', {
 	local coords = GetEntityCoords(ped)
 	local players = exports.qbx_core:GetQBPlayers()
 	for _, v in pairs(players) do
-		if v.PlayerData.job.type == 'ems' and v.PlayerData.job.onduty then
+		if v.PlayerData.job.type == 'ems' or v.PlayerData.job.type == 'ambulance' and v.PlayerData.job.onduty then
 			TriggerClientEvent('hospital:client:ambulanceAlert', v.PlayerData.source, coords, message)
 		end
 	end
@@ -113,8 +113,8 @@ end)
 ---@param event string
 local function triggerEventOnEmsPlayer(src, event)
 	local player = exports.qbx_core:GetPlayer(src)
-	if player.PlayerData.job.type ~= 'ems' then
-		exports.qbx_core:Notify(src, locale('error.not_ems'), 'error')
+	if player.PlayerData.job.type ~= 'ems' or player.PlayerData.job ~= 'ambulance' then
+        TriggerClientEvent('ox_lib:notify', src, {title='Medical', type = 'error', description = locale('error.not_ems'), position = 'top', duration = 5000, icon = 'fa fa-medkit'})
 		return
 	end
 

@@ -1,5 +1,5 @@
 local isEscorting = false
-
+local lib = exports.ox_lib
 ---@param bool boolean
 ---TODO: this event name should be changed within qb-policejob to be generic
 AddEventHandler('hospital:client:SetEscortingState', function(bool)
@@ -9,7 +9,7 @@ end)
 ---Use first aid pack on nearest player.
 lib.callback.register('hospital:client:UseFirstAid', function()
     if isEscorting then
-        exports.qbx_core:Notify(locale('error.impossible'), 'error')
+        lib.notify({title = 'Medical', type = 'error', description = locale('error.impossible'), position = 'top', duration = 5000, icon = 'fa fa-medkit' })
         return
     end
 
@@ -45,9 +45,9 @@ RegisterNetEvent('hospital:client:HelpPerson', function(targetId)
         },
     })
     then
-        exports.qbx_core:Notify(locale('success.revived'), 'success')
+        lib.notify({title = 'Medical', type = 'success', description = locale('success.revive'), position = 'top', duration = 5000, icon = 'fa fa-medkit' })
         TriggerServerEvent('hospital:server:RevivePlayer', targetId)
     else
-        exports.qbx_core:Notify(locale('error.canceled'), 'error')
+        lib.notify({title = 'Medical', type = 'error', description = locale('error.canceled'), position = 'top', duration = 5000, icon = 'fa fa-medkit' })
     end
 end)

@@ -1,7 +1,7 @@
 local config = require 'config.client'
 local sharedConfig = require 'config.shared'
 local WEAPONS = exports.qbx_core:GetWeapons()
-
+local lib = exports.ox_lib
 ---Configures and spawns a vehicle and teleports player to the driver seat.
 ---@param data { vehicleName: string, coords: vector4}
 local function takeOutVehicle(data)
@@ -78,7 +78,7 @@ end
 RegisterNetEvent('hospital:client:CheckStatus', function()
     local player = GetClosestPlayer()
     if not player then
-        exports.qbx_core:Notify(locale('error.no_player'), 'error')
+       lib.notify({title = 'Medical', type ='error', description = locale('error.no_player'),position = 'top', duration = 5000, icon = 'fa fa-medkit'})
         return
     end
 
@@ -86,7 +86,7 @@ RegisterNetEvent('hospital:client:CheckStatus', function()
 
     local status = lib.callback.await('qbx_ambulancejob:server:getPlayerStatus', false, playerId)
     if #status.injuries == 0 then
-        exports.qbx_core:Notify(locale('success.healthy_player'), 'success')
+        lib.notify({title = 'Medical', type ='success', description = locale('success.healthy_player'),position = 'top', duration = 5000, icon = 'fa fa-medkit'})
         return
     end
 
@@ -114,17 +114,17 @@ end)
 RegisterNetEvent('hospital:client:RevivePlayer', function()
     local hasFirstAid = exports.ox_inventory:Search('count', 'firstaid') > 0
     if not hasFirstAid then
-        exports.qbx_core:Notify(locale('error.no_firstaid'), 'error')
+        lib.notify({title = 'Medical', type ='error', description = locale('error.no_firstaid'),position = 'top', duration = 5000, icon = 'fa fa-medkit'})
         return
     end
 
     local player = GetClosestPlayer()
     if not player then
-        exports.qbx_core:Notify(locale('error.no_player'), 'error')
+        lib.notify({title = 'Medical', type ='error', description = locale('error.no_player'),position = 'top', duration = 5000, icon = 'fa fa-medkit'})
         return
     end
 
-    if lib.progressCircle({
+    if lib.progressBar({
         duration = 5000,
         position = 'bottom',
         label = locale('progress.revive'),
@@ -143,11 +143,11 @@ RegisterNetEvent('hospital:client:RevivePlayer', function()
     })
     then
         StopAnimTask(cache.ped, HealAnimDict, 'exit', 1.0)
-        exports.qbx_core:Notify(locale('success.revived'), 'success')
+        lib.notify({title = 'Medical', type ='success', description = locale('success.revived'),position = 'top', duration = 5000, icon = 'fa fa-medkit'})
         TriggerServerEvent('hospital:server:RevivePlayer', GetPlayerServerId(player))
     else
         StopAnimTask(cache.ped, HealAnimDict, 'exit', 1.0)
-        exports.qbx_core:Notify(locale('error.canceled'), 'error')
+        lib.notify({title = 'Medical', type ='error', description = locale('error.canceled'),position = 'top', duration = 5000, icon = 'fa fa-medkit'})
     end
 end)
 
@@ -156,17 +156,17 @@ end)
 RegisterNetEvent('hospital:client:TreatWounds', function()
     local hasBandage = exports.ox_inventory:Search('count', 'bandage') > 0
     if not hasBandage then
-        exports.qbx_core:Notify(locale('error.no_bandage'), 'error')
+        lib.notify({title = 'Medical', type ='error', description = locale('error.no_bandage'),position = 'top', duration = 5000, icon = 'fa fa-medkit'})
         return
     end
 
     local player = GetClosestPlayer()
     if not player then
-        exports.qbx_core:Notify(locale('error.no_player'), 'error')
+        lib.notify({title = 'Medical', type ='error', description = locale('error.no_player'),position = 'top', duration = 5000, icon = 'fa fa-medkit'})
         return
     end
 
-    if lib.progressCircle({
+    if lib.progressBar({
         duration = 5000,
         position = 'bottom',
         label = locale('progress.healing'),
@@ -185,11 +185,11 @@ RegisterNetEvent('hospital:client:TreatWounds', function()
     })
     then
         StopAnimTask(cache.ped, HealAnimDict, 'exit', 1.0)
-        exports.qbx_core:Notify(locale('success.helped_player'), 'success')
+        lib.notify({title = 'Medical', type ='success', description = locale('success.healed_player'),position = 'top', duration = 5000, icon = 'fa fa-medkit'})
         TriggerServerEvent('hospital:server:TreatWounds', GetPlayerServerId(player))
     else
         StopAnimTask(cache.ped, HealAnimDict, 'exit', 1.0)
-        exports.qbx_core:Notify(locale('error.canceled'), 'error')
+        lib.notify({title = 'Medical', type ='error', description = locale('error.canceled'),position = 'top', duration = 5000, icon = 'fa fa-medkit'})
     end
 end)
 

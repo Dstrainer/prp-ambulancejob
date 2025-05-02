@@ -62,7 +62,7 @@ end)
 ---@param src number
 local function wipeInventory(src)
 	exports.ox_inventory:ClearInventory(src)
-	exports.qbx_core:Notify(src, locale('error.possessions_taken'), 'error')
+    TriggerClientEvent('ox_lib:notify', src, {title='Medical', type = 'error', description = locale('error.possessions_taken'), position = 'top', duration = 5000, icon = 'fa fa-medkit'})
 end
 
 lib.callback.register('qbx_ambulancejob:server:spawnVehicle', function(source, vehicleName, vehicleCoords)
@@ -83,7 +83,7 @@ local function sendDoctorAlert()
 	local _, doctors = exports.qbx_core:GetDutyCountType('ems')
 	for i = 1, #doctors do
 		local doctor = doctors[i]
-		exports.qbx_core:Notify(doctor, locale('info.dr_needed'), 'inform')
+        TriggerClientEvent('ox_lib:notify', doctor, {title='Medical', type = 'inform', description = locale('info.dr_needed'), position = 'top', duration = 5000, icon = 'fa fa-medkit'})
 	end
 
 	SetTimeout(config.doctorCallCooldown * 60000, function()
@@ -94,7 +94,7 @@ end
 local function canCheckIn(source, hospitalName)
 	local numDoctors = exports.qbx_core:GetDutyCountType('ems')
 	if numDoctors >= sharedConfig.minForCheckIn then
-		exports.qbx_core:Notify(source, locale('info.dr_alert'), 'inform')
+        TriggerClientEvent('ox_lib:notify', source, {title='Medical', type = 'inform', description = locale('error.dr_alert'), position = 'top', duration = 5000, icon = 'fa fa-medkit'})
 		sendDoctorAlert()
 		return false
 	end
@@ -115,7 +115,7 @@ local function checkIn(src, patientSrc, hospitalName)
 
 	local bedIndex = getOpenBed(hospitalName)
 	if not bedIndex then
-		exports.qbx_core:Notify(src, locale('error.beds_taken'), 'error')
+        TriggerClientEvent('ox_lib:notify', src, {title='Medical', type = 'error', description = locale('error.beds_taken'), position = 'top', duration = 5000, icon = 'fa fa-medkit'})
 		return false
 	end
 
@@ -148,7 +148,7 @@ local function respawn(src)
 
 	local bedIndex = getOpenBed(closestHospital)
 	if not bedIndex then
-		exports.qbx_core:Notify(src, locale('error.beds_taken'), 'error')
+        TriggerClientEvent('ox_lib:notify', src, {title='Medical', type = 'error', description = locale('error.beds_taken'), position = 'top', duration = 5000, icon = 'fa fa-medkit'})
 		return
 	end
 	TriggerClientEvent('qbx_ambulancejob:client:checkedIn', src, closestHospital, bedIndex)
